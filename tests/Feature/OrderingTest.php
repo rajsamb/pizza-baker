@@ -9,6 +9,7 @@ use App\Services\RecipeIngredientAdderService;
 use App\Utilities\Luigis;
 use App\Utilities\Pizza;
 use BadFunctionCallException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
@@ -132,12 +133,35 @@ class OrderingTest extends TestCase
             // 2) Add additional ingredients after order
             $recipeIngredientAdderService = new RecipeIngredientAdderService($order->recipes->first());
             $recipeIngredientAdderService
-                ->add('Mozzarella', 1)
+                ->add('Mozzarella')
                 ->add('Tomato', 2);
 
             $this->assertCount(1, $order->recipes);
             $this->assertEquals(Recipe::MARGHERITA_ID, $order->recipes->first()->id);
             $this->assertEquals(7.99, $order->getPriceAttribute());
+        } finally {
+            DB::connection(env('DB_CONNECTION'))->rollBack();
+        }
+    }
+
+    public function testAddingInvalidIngredientThrowModelNotFoundException(): void
+    {
+        $this->expectException(ModelNotFoundException::class);
+
+        DB::connection(env('DB_CONNECTION'))->beginTransaction();
+
+        try {
+            // 1) Create the order
+            $order = Order::create(['status' => Order::STATUS_PENDING]);
+
+            OrderRecipe::create([
+                'order_id' => $order->id,
+                'recipe_id' => Recipe::MARGHERITA_ID,
+            ]);
+
+            // 2) Add ingredients that doesn't exist on the order
+            $recipeIngredientAdderService = new RecipeIngredientAdderService($order->recipes->first());
+            $recipeIngredientAdderService->add('Olive', 5);
         } finally {
             DB::connection(env('DB_CONNECTION'))->rollBack();
         }

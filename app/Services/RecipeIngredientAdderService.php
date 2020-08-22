@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeIngredient;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class RecipeIngredientAdderService
 {
@@ -24,9 +25,13 @@ class RecipeIngredientAdderService
      * @param int $quantity
      * @return $this
      */
-    public function add(string $ingredientToAdd, int $quantity): self
+    public function add(string $ingredientToAdd, int $quantity = 1): self
     {
         $ingredient = Ingredient::whereName($ingredientToAdd)->first();
+
+        if (!$ingredient) {
+            throw new ModelNotFoundException('Ingredient not found for ' . $ingredientToAdd);
+        }
 
         $lastRowId = RecipeIngredient::latest('id')->first()->id;
 
