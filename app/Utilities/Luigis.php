@@ -65,15 +65,17 @@ class Luigis
      */
     private function prepare(Recipe $recipe): Pizza
     {
-        foreach ($recipe->ingredients as $ingredient) {
+        foreach ($recipe->ingredientRequirements as $ingredientRequirements) {
+            $ingredient = Ingredient::find($ingredientRequirements->ingredient_id);
+
             // 1) Check fridge has enough of each ingredient
-            if (!$this->fridge->has($ingredient, 1)) {
+            if (!$this->fridge->has($ingredient, $ingredientRequirements->amount)) {
                 // 2) restockFridge if needed
                 $this->restockFridge();
             }
 
             // 3) take ingredients from the fridge
-            $this->fridge->take($ingredient, 1);
+            $this->fridge->take($ingredient, $ingredientRequirements->amount);
         }
 
         // 4) create new Pizza
