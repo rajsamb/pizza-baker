@@ -15,6 +15,8 @@ class Luigis
     /** @var Oven */
     private $oven;
 
+    private $defaultRestockQuantity = 10;
+
     /**
      * @param Oven|null $oven
      */
@@ -31,7 +33,7 @@ class Luigis
     {
         /** @var Ingredient $ingredient */
         foreach (Ingredient::all() as $ingredient) {
-            $this->fridge->add($ingredient, 10);
+            $this->fridge->add($ingredient, $this->defaultRestockQuantity);
         }
     }
 

@@ -39,6 +39,9 @@ class Order extends Model
 
     protected $fillable = ['status'];
 
+    /**
+     * @return HasManyThrough
+     */
     public function recipes(): HasManyThrough
     {
         return $this->hasManyThrough(
@@ -56,13 +59,10 @@ class Order extends Model
      */
     public function getPriceAttribute(): float
     {
-        $orderPrice = 0.00;
-        $allRecipes = $this->recipes->all();
+        $recipeCollection = collect($this->recipes->all());
 
-        foreach ($allRecipes as $recipe) {
-            $orderPrice += $recipe->price;
-        }
-
-        return $orderPrice;
+        return $recipeCollection->reduce(static function ($totalPriceToCarryOver, Recipe $recipe) {
+            return $totalPriceToCarryOver + $recipe->price;
+        });
     }
 }
