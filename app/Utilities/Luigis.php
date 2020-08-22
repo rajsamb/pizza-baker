@@ -11,6 +11,7 @@ class Luigis
 {
     /** @var Fridge */
     private $fridge;
+
     /** @var Oven */
     private $oven;
 
@@ -35,24 +36,42 @@ class Luigis
      */
     public function deliver(Order $order): Collection
     {
-        // prepare and cook each recipe in the order
+        return collect($order->recipes->all())->map(function (Recipe $recipe) {
+            $pizza = $this->prepare($recipe);
+            $this->cook($pizza);
+            return $pizza;
+        });
     }
 
-    // todo create this function (returns a raw pizza)
-    // note:
-    //  you can only create a new Pizza if you first take all the
-    //  ingredients required by the recipe from the fridge
+    /**
+     * You can only create a new Pizza if you first take all the
+     * ingredients required by the recipe from the fridge
+     *
+     * @param Recipe $recipe
+     * @return Pizza
+     */
     private function prepare(Recipe $recipe): Pizza
     {
-        // 1) Check fridge has enough of each ingredient
-        // 2) restockFridge if needed
-        // 3) take ingredients from the fridge
+        foreach ($recipe->ingredients as $ingredient) {
+            // 1) Check fridge has enough of each ingredient
+            if (!$this->fridge->has($ingredient, 1)) {
+                // 2) restockFridge if needed
+                $this->restockFridge();
+            }
+
+            // 3) take ingredients from the fridge
+            $this->fridge->take($ingredient, 1);
+        }
+
         // 4) create new Pizza
+        return new Pizza($recipe);
     }
 
-    // todo create this function (use the oven to bake the pizza)
+    /**
+     * @param Pizza $pizza
+     */
     private function cook(Pizza &$pizza): void
     {
-
+        $this->oven->bake($pizza);
     }
 }

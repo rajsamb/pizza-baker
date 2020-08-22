@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Utilities;
-
 
 use App\Models\FridgeContent;
 use App\Models\Ingredient;
@@ -35,6 +33,7 @@ class Fridge
     public function take(Ingredient $ingredient, int $amount): self
     {
         $existingAmount = $this->amount($ingredient);
+
         if ($existingAmount < $amount) {
             throw new InvalidArgumentException("Fridge has {$existingAmount} of {$ingredient->name}, you asked for {$amount}");
         }
@@ -54,6 +53,7 @@ class Fridge
             ['ingredient_id' => $ingredient->id],
             ['amount' => $this->stock[$class]]
         );
+
         $ingredient->refresh();
     }
 
@@ -63,9 +63,15 @@ class Fridge
         return $this->stock[get_class($ingredient)] ?? 0;
     }
 
-    // TODO: create this function
+    /**
+     * @param Ingredient $ingredient
+     * @param int $amount
+     * @return bool
+     */
     public function has(Ingredient $ingredient, int $amount): bool
     {
+        $class = get_class($ingredient);
 
+        return isset($this->stock[get_class($ingredient)]) && $this->stock[$class] > $amount;
     }
 }

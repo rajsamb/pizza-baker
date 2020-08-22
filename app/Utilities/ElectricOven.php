@@ -17,7 +17,9 @@ class ElectricOven implements Oven
      */
     public function bake(Pizza &$pizza): Oven
     {
-        // TODO: Implement bake() method.
+        $pizza->setStatus(Pizza::STATUS_COOKED);
+
+        return $this;
     }
 
     /**
