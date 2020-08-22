@@ -5,6 +5,7 @@ namespace App\Utilities;
 use App\Models\Ingredient;
 use App\Models\Order;
 use App\Models\Recipe;
+use App\Services\PizzaBakeMessageBuilder;
 use Illuminate\Support\Collection;
 
 class Luigis
@@ -24,7 +25,7 @@ class Luigis
     public function __construct(Oven $oven = null)
     {
         $this->fridge = new Fridge();
-        $this->oven = $oven ? $oven : new ElectricOven();
+        $this->oven = $oven ? $oven : new ElectricOven(new PizzaBakeMessageBuilder());
     }
 
     /**
@@ -46,6 +47,8 @@ class Luigis
      */
     public function deliver(Order $order): Collection
     {
+        $this->oven->heatUp();
+
         return collect($order->recipes->all())->map(function (Recipe $recipe) {
             $pizza = $this->prepare($recipe);
             $this->cook($pizza);

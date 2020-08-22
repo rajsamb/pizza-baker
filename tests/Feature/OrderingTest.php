@@ -30,6 +30,7 @@ class OrderingTest extends TestCase
         try {
             // 1) Create the order
             $order = Order::create(['status' => Order::STATUS_PENDING]);
+
             OrderRecipe::create([
                 'order_id' => $order->id,
                 'recipe_id' => Recipe::MARGHERITA_ID,
@@ -39,12 +40,10 @@ class OrderingTest extends TestCase
             $this->assertEquals(Recipe::MARGHERITA_ID, $order->recipes->first()->id);
             $this->assertEquals(6.99, $order->getPriceAttribute());
 
-
             // 2) Deliver the order
             $pizzas = $this->luigis->deliver($order);
 
             $this->assertCount(1, $pizzas);
-
 
             // 3) Verify the order
             /** @var Pizza $pizza */
@@ -61,8 +60,8 @@ class OrderingTest extends TestCase
             while ($pizza->getSlicesRemaining()) {
                 $pizza->eatSlice();
             }
-            $this->assertEquals(Pizza::STATUS_ALL_EATEN, $pizza->getStatus());
 
+            $this->assertEquals(Pizza::STATUS_ALL_EATEN, $pizza->getStatus());
 
             // 5) Verify can't eat an eaten pizza
             $gotException = 'no exception thrown';
@@ -71,6 +70,7 @@ class OrderingTest extends TestCase
             } catch (BadFunctionCallException $e) {
                 $gotException = 'exception was thrown';
             }
+
             $this->assertEquals('exception was thrown', $gotException);
 
         } finally {
