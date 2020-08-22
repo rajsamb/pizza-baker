@@ -19,7 +19,7 @@ class OrderingTest extends TestCase
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
-        parent::setUp();
+        $this->setUp();
         $this->luigis = new Luigis();
     }
 
