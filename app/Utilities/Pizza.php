@@ -8,12 +8,13 @@ use InvalidArgumentException;
 
 class Pizza
 {
-    const STATUS_RAW = 'raw';
-    const STATUS_COOKED = 'cooked';
-    const STATUS_OVER_COOKED = 'overCooked';
-    const STATUS_PARTLY_EATEN = 'partlyEaten';
-    const STATUS_ALL_EATEN = 'allEaten';
-    const STATUSES = [
+    public const STATUS_RAW = 'raw';
+    public const STATUS_COOKED = 'cooked';
+    public const STATUS_OVER_COOKED = 'overCooked';
+    public const STATUS_PARTLY_EATEN = 'partlyEaten';
+    public const STATUS_ALL_EATEN = 'allEaten';
+
+    public const STATUSES = [
         self::STATUS_RAW,
         self::STATUS_COOKED,
         self::STATUS_OVER_COOKED,
@@ -21,27 +22,51 @@ class Pizza
         self::STATUS_ALL_EATEN,
     ];
 
-    private $slicesRemaining = 8;
+    private const TOTAL_SLICE_IN_PIZZA = 8;
+
+    private const PIZZA_ALL_EATEN = 0;
+
+    /** @var int */
+    private $slicesRemaining = self::TOTAL_SLICE_IN_PIZZA;
 
     /** @var Recipe $recipe */
     private $recipe;
 
-    private $status = '';
+    /** @var string */
+    private $status;
 
+    /**
+     * @param Recipe $recipe
+     */
     public function __construct(Recipe $recipe)
     {
         $this->recipe = $recipe;
         $this->status = self::STATUS_RAW;
     }
 
-    // TODO: implement function. Update pizza status to be partly eaten or all eaten
     /**
-     * @throws BadFunctionCallException if no slices left to eat
-     * @throws BadFunctionCallException if trying to eat a raw pizza
+     * @throws BadFunctionCallException
+     * @return void
      */
     public function eatSlice(): void
     {
+        if ($this->getStatus() === self::STATUS_ALL_EATEN) {
+            throw new BadFunctionCallException('No more Slices left to eat');
+        }
 
+        if ($this->getStatus() === self::STATUS_RAW) {
+            throw new BadFunctionCallException('Trying to eat a raw pizza');
+        }
+
+        $this->slicesRemaining--;
+
+        if ($this->slicesRemaining < self::TOTAL_SLICE_IN_PIZZA) {
+            $this->setStatus(self::STATUS_PARTLY_EATEN);
+        }
+
+        if ($this->slicesRemaining === self::PIZZA_ALL_EATEN) {
+            $this->setStatus(self::STATUS_ALL_EATEN);
+        }
     }
 
     /**

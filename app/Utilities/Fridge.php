@@ -8,6 +8,7 @@ use InvalidArgumentException;
 
 class Fridge
 {
+    /** @var array */
     private $stock = [];
 
     public function __construct()

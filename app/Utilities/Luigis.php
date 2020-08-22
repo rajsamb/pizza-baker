@@ -15,6 +15,9 @@ class Luigis
     /** @var Oven */
     private $oven;
 
+    /**
+     * @param Oven|null $oven
+     */
     public function __construct(Oven $oven = null)
     {
         $this->fridge = new Fridge();
