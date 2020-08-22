@@ -56,6 +56,13 @@ class Order extends Model
      */
     public function getPriceAttribute(): float
     {
-        return $this->recipes->first()->price;
+        $orderPrice = 0.00;
+        $allRecipes = $this->recipes->all();
+
+        foreach ($allRecipes as $recipe) {
+            $orderPrice += $recipe->price;
+        }
+
+        return $orderPrice;
     }
 }
