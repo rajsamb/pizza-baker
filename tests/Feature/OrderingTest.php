@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\OrderRecipe;
 use App\Models\Recipe;
+use App\Services\RecipeIngredientAdderService;
 use App\Utilities\Luigis;
 use App\Utilities\Pizza;
 use BadFunctionCallException;
@@ -16,6 +17,11 @@ class OrderingTest extends TestCase
     /** @var Luigis */
     private $luigis;
 
+    /**
+     * @param null $name
+     * @param array $data
+     * @param string $dataName
+     */
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
@@ -105,6 +111,33 @@ class OrderingTest extends TestCase
             $pizzas = $this->luigis->deliver($order);
 
             $this->assertCount(2, $pizzas);
+        } finally {
+            DB::connection(env('DB_CONNECTION'))->rollBack();
+        }
+    }
+
+    public function testAddingIngredientCostMoney(): void
+    {
+        DB::connection(env('DB_CONNECTION'))->beginTransaction();
+
+        try {
+            // 1) Create the order
+            $order = Order::create(['status' => Order::STATUS_PENDING]);
+
+            OrderRecipe::create([
+                'order_id' => $order->id,
+                'recipe_id' => Recipe::MARGHERITA_ID,
+            ]);
+
+            // 2) Add additional ingredients after order
+            $recipeIngredientAdderService = new RecipeIngredientAdderService($order->recipes->first());
+            $recipeIngredientAdderService
+                ->add('Mozzarella', 1)
+                ->add('Tomato', 2);
+
+            $this->assertCount(1, $order->recipes);
+            $this->assertEquals(Recipe::MARGHERITA_ID, $order->recipes->first()->id);
+            $this->assertEquals(7.99, $order->getPriceAttribute());
         } finally {
             DB::connection(env('DB_CONNECTION'))->rollBack();
         }

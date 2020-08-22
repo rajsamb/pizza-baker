@@ -7,7 +7,6 @@ use App\Models\RecipeIngredient;
 
 class RecipeIngredientTableSeeder extends Seeder
 {
-
     public function run()
     {
         // Margherita

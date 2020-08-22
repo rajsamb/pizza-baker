@@ -58,4 +58,12 @@ class Recipe extends Model
             'order_id'
         );
     }
+
+    /**
+     * @param float $amountToAdd
+     */
+    public function addAmountToBasePrice(float $amountToAdd): void
+    {
+        $this->price += $amountToAdd;
+    }
 }

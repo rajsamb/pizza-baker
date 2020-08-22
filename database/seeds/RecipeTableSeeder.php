@@ -5,7 +5,6 @@ use App\Models\Recipe;
 
 class RecipeTableSeeder extends Seeder
 {
-
     public function run()
     {
         Recipe::updateOrCreate(
