@@ -28,7 +28,6 @@ class OrderingTest extends TestCase
         DB::connection(env('DB_CONNECTION'))->beginTransaction();
 
         try {
-
             // 1) Create the order
             $order = Order::create(['status' => Order::STATUS_PENDING]);
             OrderRecipe::create([

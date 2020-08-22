@@ -51,9 +51,11 @@ class Order extends Model
         );
     }
 
-    // todo create this function (returns order price)
+    /**
+     * @return float
+     */
     public function getPriceAttribute(): float
     {
-
+        return $this->recipes->first()->price;
     }
 }
