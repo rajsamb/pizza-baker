@@ -15,6 +15,7 @@ class Luigis
     /** @var Oven */
     private $oven;
 
+    /** @var int */
     private $defaultRestockQuantity = 10;
 
     /**
@@ -79,7 +80,7 @@ class Luigis
     /**
      * @param Pizza $pizza
      */
-    private function cook(Pizza &$pizza): void
+    private function cook(Pizza $pizza): void
     {
         $this->oven->bake($pizza);
     }
