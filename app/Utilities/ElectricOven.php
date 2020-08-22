@@ -30,7 +30,7 @@ class ElectricOven implements Oven
     /**
      * @inheritDoc
      */
-    public function bake(Pizza &$pizza): Oven
+    public function bake(Pizza $pizza): Oven
     {
         echo $this->pizzaBakeMessageBuilder->build($pizza);
 

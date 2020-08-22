@@ -18,7 +18,7 @@ interface Oven
      * @param Pizza $pizza
      * @return self
      */
-    public function bake(Pizza &$pizza): self;
+    public function bake(Pizza $pizza): self;
 
     /**
      * Just echo 'oven is off'
