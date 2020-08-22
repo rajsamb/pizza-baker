@@ -35,7 +35,7 @@ class OrderingTest extends TestCase
                 'recipe_id' => Recipe::MARGHERITA_ID,
             ]);
 
-            $this->assertEquals(1, count($order->recipes));
+            $this->assertCount(1, $order->recipes);
             $this->assertEquals(Recipe::MARGHERITA_ID, $order->recipes->first()->id);
             $this->assertEquals(6.99, $order->getPriceAttribute());
 
@@ -43,7 +43,7 @@ class OrderingTest extends TestCase
             // 2) Deliver the order
             $pizzas = $this->luigis->deliver($order);
 
-            $this->assertEquals(1, count($pizzas));
+            $this->assertCount(1, $pizzas);
 
 
             // 3) Verify the order
