@@ -22,8 +22,10 @@ class Pizza
     ];
 
     private $slicesRemaining = 8;
-    /** @var Recipe */
+
+    /** @var Recipe $recipe */
     private $recipe;
+
     private $status = '';
 
     public function __construct(Recipe $recipe)
@@ -42,31 +44,48 @@ class Pizza
 
     }
 
+    /**
+     * @return int
+     */
     public function getSlicesRemaining(): int
     {
         return $this->slicesRemaining;
     }
 
+    /**
+     * @return Recipe
+     */
     public function getRecipe(): Recipe
     {
         return $this->recipe;
     }
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->recipe->name;
     }
 
+    /**
+     * @return string
+     */
     public function getStatus(): string
     {
         return $this->status;
     }
 
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus(string $status): Pizza
     {
         if (!in_array($status, self::STATUSES)) {
             throw new InvalidArgumentException("$status is not a valid status");
         }
+
         $this->status = $status;
         return $this;
     }

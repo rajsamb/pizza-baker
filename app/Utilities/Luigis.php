@@ -21,6 +21,9 @@ class Luigis
         $this->oven = $oven ? $oven : new ElectricOven();
     }
 
+    /**
+     * @return void
+     */
     public function restockFridge(): void
     {
         /** @var Ingredient $ingredient */
@@ -29,8 +32,9 @@ class Luigis
         }
     }
 
-    // todo create this function (returns a collection of cooked pizzas)
     /**
+     * Returns a collection of cooked pizzas
+     *
      * @param Order $order
      * @return Pizza[]|Collection
      */

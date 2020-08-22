@@ -18,6 +18,11 @@ class Fridge
         }
     }
 
+    /**
+     * @param Ingredient $ingredient
+     * @param int $amount
+     * @return $this
+     */
     public function add(Ingredient $ingredient, int $amount): self
     {
         $class = get_class($ingredient);
@@ -30,6 +35,11 @@ class Fridge
         return $this;
     }
 
+    /**
+     * @param Ingredient $ingredient
+     * @param int $amount
+     * @return $this
+     */
     public function take(Ingredient $ingredient, int $amount): self
     {
         $existingAmount = $this->amount($ingredient);
@@ -43,6 +53,10 @@ class Fridge
         return $this;
     }
 
+    /**
+     * @param Ingredient $ingredient
+     * @param int $amount
+     */
     private function updateStock(Ingredient $ingredient, int $amount): void
     {
         $class = get_class($ingredient);
