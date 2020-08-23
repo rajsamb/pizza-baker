@@ -53,5 +53,4 @@ class Ingredient extends Model
     {
         return $this->hasOne(FridgeContent::class);
     }
-
 }

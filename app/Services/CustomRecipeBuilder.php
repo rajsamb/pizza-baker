@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeIngredient;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CustomRecipeBuilder
 {
@@ -18,11 +17,31 @@ class CustomRecipeBuilder
      */
     public function build(string $customPizzaName, array $ingredients): Recipe
     {
-        $customRecipe = Recipe::updateOrCreate([
+        $customRecipe = $this->createCustomPizza($customPizzaName);
+
+        $this->addIngredients($ingredients, $customRecipe);
+
+        return $customRecipe;
+    }
+
+    /**
+     * @param string $customPizzaName
+     * @return Recipe
+     */
+    private function createCustomPizza(string $customPizzaName): Recipe
+    {
+        return Recipe::updateOrCreate([
             'name' => $customPizzaName,
             'price' => self::BASE_PIZZA_PRICE
         ]);
+    }
 
+    /**
+     * @param array $ingredients
+     * @param $customRecipe
+     */
+    private function addIngredients(array $ingredients, $customRecipe): void
+    {
         if (count($ingredients) > 0) {
             foreach ($ingredients as $ingredientToAdd) {
                 $ingredient = Ingredient::whereName($ingredientToAdd['name'])->first();
@@ -45,7 +64,5 @@ class CustomRecipeBuilder
                 $customRecipe->save();
             }
         }
-
-        return $customRecipe;
     }
 }

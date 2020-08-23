@@ -206,7 +206,7 @@ class OrderingTest extends TestCase
         $this->assertEquals(10.20, $order->getPriceAttribute());
     }
 
-    public function testAddingInvalidIngredientOnCustomPizzaWillSkipTheIngredient(): void
+    public function testAddingInvalidIngredientOliveOnCustomPizzaWillSkipTheIngredient(): void
     {
         $customRecipeBuilder = new CustomRecipeBuilder();
         $customRecipe = $customRecipeBuilder->build(
