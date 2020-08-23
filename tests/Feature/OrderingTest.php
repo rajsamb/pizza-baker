@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Order;
 use App\Models\OrderRecipe;
 use App\Models\Recipe;
+use App\Services\CustomRecipeBuilder;
 use App\Services\RecipeIngredientAdderService;
 use App\Utilities\Luigis;
 use App\Utilities\Pizza;
@@ -165,5 +166,21 @@ class OrderingTest extends TestCase
         } finally {
             DB::connection(env('DB_CONNECTION'))->rollBack();
         }
+    }
+
+    public function testCustomerCanMakeCustomPizzas(): void
+    {
+        $customRecipeBuilder = new CustomRecipeBuilder();
+        $customRecipe = $customRecipeBuilder->build('UltimatePizza');
+
+        // 1) Create the order
+        $order = Order::create(['status' => Order::STATUS_PENDING]);
+
+        OrderRecipe::create([
+            'order_id' => $order->id,
+            'recipe_id' => $customRecipe->id
+        ]);
+
+        $this->assertCount(1, $order->recipes);
     }
 }
