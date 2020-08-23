@@ -171,7 +171,27 @@ class OrderingTest extends TestCase
     public function testCustomerCanMakeCustomPizzas(): void
     {
         $customRecipeBuilder = new CustomRecipeBuilder();
-        $customRecipe = $customRecipeBuilder->build('UltimatePizza');
+        $customRecipe = $customRecipeBuilder->build(
+            'UltimatePizza',
+            [
+                [
+                    'name' => 'Mozzarella',
+                    'qty' => 2
+                ],
+                [
+                    'name' => 'Tomato',
+                    'qty' => 4
+                ],
+                [
+                    'name' => 'Ham',
+                    'qty' => 2
+                ],
+                [
+                    'name' => 'Pineapple',
+                    'qty' => 3
+                ]
+            ]
+        );
 
         // 1) Create the order
         $order = Order::create(['status' => Order::STATUS_PENDING]);
@@ -182,5 +202,7 @@ class OrderingTest extends TestCase
         ]);
 
         $this->assertCount(1, $order->recipes);
+        $this->assertEquals($customRecipe->id, $order->recipes->first()->id);
+        $this->assertEquals(10.20, $order->getPriceAttribute());
     }
 }
