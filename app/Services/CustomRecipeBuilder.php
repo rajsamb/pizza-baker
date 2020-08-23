@@ -17,7 +17,7 @@ class CustomRecipeBuilder
      */
     public function build(string $customPizzaName, array $ingredients): Recipe
     {
-        $receipe = Recipe::updateOrCreate([
+        $customRecipe = Recipe::updateOrCreate([
             'name' => $customPizzaName,
             'price' => self::BASE_PIZZA_PRICE
         ]);
@@ -26,22 +26,19 @@ class CustomRecipeBuilder
             foreach ($ingredients as $ingredientToAdd) {
                 $ingredient = Ingredient::whereName($ingredientToAdd['name'])->first();
 
-                $lastRowId = RecipeIngredient::latest('id')->first()->id;
-
                 RecipeIngredient::updateOrCreate(
                     [
-                        'id' => $lastRowId + 1,
-                        'recipe_id' => $receipe->id,
+                        'recipe_id' => $customRecipe->id,
                         'ingredient_id' => $ingredient->id,
                         'amount' => $ingredientToAdd['qty']
                     ]
                 );
 
-                $receipe->price += $ingredient->price * $ingredientToAdd['qty'];
-                $receipe->save();
+                $customRecipe->price += $ingredient->price * $ingredientToAdd['qty'];
+                $customRecipe->save();
             }
         }
 
-        return $receipe;
+        return $customRecipe;
     }
 }

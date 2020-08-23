@@ -33,11 +33,8 @@ class RecipeIngredientAdderService
             throw new ModelNotFoundException('Ingredient not found for ' . $ingredientToAdd);
         }
 
-        $lastRowId = RecipeIngredient::latest('id')->first()->id;
-
         RecipeIngredient::updateOrCreate(
             [
-                'id' => $lastRowId + 1,
                 'recipe_id'     => $this->recipe->id,
                 'ingredient_id' => $ingredient->id,
                 'amount'        => $quantity
