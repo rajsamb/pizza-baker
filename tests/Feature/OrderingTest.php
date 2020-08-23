@@ -205,4 +205,46 @@ class OrderingTest extends TestCase
         $this->assertEquals($customRecipe->id, $order->recipes->first()->id);
         $this->assertEquals(10.20, $order->getPriceAttribute());
     }
+
+    public function testAddingInvalidIngredientOnCustomPizzaWillSkipTheIngredient(): void
+    {
+        $customRecipeBuilder = new CustomRecipeBuilder();
+        $customRecipe = $customRecipeBuilder->build(
+            'UltimatePizza',
+            [
+                [
+                    'name' => 'Mozzarella',
+                    'qty' => 2
+                ],
+                [
+                    'name' => 'Tomato',
+                    'qty' => 4
+                ],
+                [
+                    'name' => 'Ham',
+                    'qty' => 2
+                ],
+                [
+                    'name' => 'Pineapple',
+                    'qty' => 3
+                ],
+                [
+                    'name' => 'Olive',
+                    'qty' => 10
+                ]
+            ]
+        );
+
+        // 1) Create the order
+        $order = Order::create(['status' => Order::STATUS_PENDING]);
+
+        OrderRecipe::create([
+            'order_id' => $order->id,
+            'recipe_id' => $customRecipe->id
+        ]);
+
+        $this->assertCount(1, $order->recipes);
+        $this->assertEquals($customRecipe->id, $order->recipes->first()->id);
+        $this->assertEquals(10.20, $order->getPriceAttribute());
+    }
 }

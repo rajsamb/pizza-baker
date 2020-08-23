@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\RecipeIngredient;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CustomRecipeBuilder
 {
@@ -25,6 +26,12 @@ class CustomRecipeBuilder
         if (count($ingredients) > 0) {
             foreach ($ingredients as $ingredientToAdd) {
                 $ingredient = Ingredient::whereName($ingredientToAdd['name'])->first();
+
+                if (!$ingredient) {
+                    // In real world, log the message or flash on a view to be displayed
+                    echo "Ingredient {$ingredientToAdd['name']} not found. Preparing Recipe without this ingredient.";
+                    continue;
+                }
 
                 RecipeIngredient::updateOrCreate(
                     [
